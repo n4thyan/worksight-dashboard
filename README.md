@@ -6,7 +6,7 @@ It is a portfolio project focused on realistic workplace use cases: sales review
 
 ## Project status
 
-Portfolio MVP. The current version runs locally and is prepared for static deployment at `https://nathm.net/worksight/`.
+Live portfolio MVP. The current version runs as a static demo at `https://nathm.net/worksight/` and can also be run locally for development/testing.
 
 The dashboard includes sample business data and CSV upload. Uploaded CSV files are processed in the browser. No uploaded spreadsheet data is sent to a server.
 
@@ -96,5 +96,5 @@ Users should check the source spreadsheet, confirm missing or unusual values and
 - Add saved dashboard views
 - Add row-level CSV validation warnings
 - Add downloadable filtered CSV export
-- Add screenshots after deployment
+- Add README screenshots
 - Add optional prompt templates for reviewing exported summaries in Gemini or ChatGPT
