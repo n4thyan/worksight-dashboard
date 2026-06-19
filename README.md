@@ -6,19 +6,15 @@ It is a portfolio project focused on realistic workplace use cases: sales review
 
 ## Project status
 
-Portfolio MVP. The current version runs locally and is ready for static deployment.
+Portfolio MVP. The current version runs locally and is prepared for static deployment at `https://nathm.net/worksight/`.
 
 The dashboard includes sample business data and CSV upload. Uploaded CSV files are processed in the browser. No uploaded spreadsheet data is sent to a server.
 
 ## Live demo
 
-Planned live path:
-
 ```text
 https://nathm.net/worksight/
 ```
-
-Until deployment, run it locally with the commands below.
 
 ## What it does
 
