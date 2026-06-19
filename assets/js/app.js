@@ -1,4 +1,9 @@
-const state = { rows: [], filtered: [], charts: {} };
+const state = {
+  rows: [],
+  filtered: [],
+  charts: {},
+  sourceLabel: 'Sample data'
+};
 
 const money = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
 const number = new Intl.NumberFormat('en-GB');
@@ -16,6 +21,7 @@ const el = {
   status: document.getElementById('statusFilter'),
   kpis: document.getElementById('kpiGrid'),
   count: document.getElementById('recordCount'),
+  source: document.getElementById('dataSourceStatus'),
   insights: document.getElementById('insightList'),
   quality: document.getElementById('qualityList'),
   table: document.getElementById('dataTableBody')
@@ -64,17 +70,24 @@ function normalise(row) {
 async function loadSample() {
   const response = await fetch('data/sample-business-data.csv');
   const text = await response.text();
-  loadRows(parseCsv(text));
+  loadRows(parseCsv(text), 'Sample business data');
 }
 
-function loadRows(rows) {
+function loadRows(rows, sourceLabel = state.sourceLabel) {
   state.rows = rows.filter((row) => row.date);
-  const dates = state.rows.map((row) => row.date).sort();
-  el.start.value = dates[0] || '';
-  el.end.value = dates[dates.length - 1] || '';
+  state.sourceLabel = sourceLabel;
+  resetFilterValues();
   fillSelect(el.department, unique('department'), 'All departments');
   fillSelect(el.status, unique('status'), 'All statuses');
   applyFilters();
+}
+
+function resetFilterValues() {
+  const dates = state.rows.map((row) => row.date).sort();
+  el.start.value = dates[0] || '';
+  el.end.value = dates[dates.length - 1] || '';
+  el.department.value = 'all';
+  el.status.value = 'all';
 }
 
 function unique(key) {
@@ -121,11 +134,18 @@ function render() {
   const rows = state.filtered;
   const m = metrics(rows);
   el.count.textContent = `${rows.length} row${rows.length === 1 ? '' : 's'}`;
+  updateSourceStatus(rows);
   renderKpis(m, rows);
   renderCharts(rows);
   renderInsights(rows, m);
   renderQuality(rows);
   renderTable(rows);
+}
+
+function updateSourceStatus(rows) {
+  const start = el.start.value || 'no start date';
+  const end = el.end.value || 'no end date';
+  el.source.innerHTML = `<strong>${state.sourceLabel}</strong> loaded. Showing ${number.format(rows.length)} of ${number.format(state.rows.length)} rows from ${start} to ${end}.`;
 }
 
 function renderKpis(m, rows) {
@@ -183,10 +203,10 @@ function drawLine(id, entries) {
       datasets: [{
         label: 'Revenue',
         data: entries.map((x) => x[1]),
-        tension: 0.28,
+        tension: 0.24,
         borderWidth: 2,
         borderColor: '#2563eb',
-        backgroundColor: 'rgba(37, 99, 235, 0.12)',
+        backgroundColor: 'rgba(37, 99, 235, 0.10)',
         pointBackgroundColor: '#2563eb',
         pointRadius: 3,
         fill: true
@@ -228,21 +248,26 @@ function destroy(id) {
   if (state.charts[id]) state.charts[id].destroy();
 }
 
-function renderInsights(rows, m) {
+function insightNotes(rows, m) {
   const notes = [];
   const departments = group(rows, 'department', 'revenue');
   const months = byMonth(rows);
-  if (!rows.length) notes.push('No rows match the current filters.');
-  else {
-    if (departments[0]) notes.push(`${departments[0][0]} is the highest revenue department at ${money.format(departments[0][1])}.`);
-    notes.push(m.overdue ? `${m.overdue} overdue item${m.overdue === 1 ? '' : 's'} need attention.` : 'No overdue rows appear in this view.');
-    if (months.length > 1) notes.push(`Latest month revenue is ${money.format(months[months.length - 1][1])}.`);
-    if (m.satisfaction) notes.push(`Average satisfaction is ${m.satisfaction.toFixed(1)}/5.`);
+  if (!rows.length) {
+    notes.push('No rows match the current filters.');
+    return notes;
   }
-  renderList(el.insights, notes);
+  if (departments[0]) notes.push(`${departments[0][0]} is the highest revenue department at ${money.format(departments[0][1])}.`);
+  notes.push(m.overdue ? `${m.overdue} overdue item${m.overdue === 1 ? '' : 's'} need attention.` : 'No overdue rows appear in this view.');
+  if (months.length > 1) notes.push(`Latest month revenue is ${money.format(months[months.length - 1][1])}.`);
+  if (m.satisfaction) notes.push(`Average satisfaction is ${m.satisfaction.toFixed(1)}/5.`);
+  return notes;
 }
 
-function renderQuality(rows) {
+function renderInsights(rows, m) {
+  renderList(el.insights, insightNotes(rows, m));
+}
+
+function qualityNotes(rows) {
   const notes = [];
   const zeroRevenue = rows.filter((row) => row.revenue === 0).length;
   const slow = rows.filter((row) => row.response_hours > 24).length;
@@ -250,7 +275,11 @@ function renderQuality(rows) {
   if (zeroRevenue) notes.push(`${zeroRevenue} rows have zero revenue. This may be normal for admin or support work.`);
   if (slow) notes.push(`${slow} rows have response times above 24 hours.`);
   if (!zeroRevenue && !slow) notes.push('No obvious zero-revenue or slow-response warnings in this view.');
-  renderList(el.quality, notes);
+  return notes;
+}
+
+function renderQuality(rows) {
+  renderList(el.quality, qualityNotes(rows));
 }
 
 function renderList(list, notes) {
@@ -277,7 +306,20 @@ function renderTable(rows) {
 
 function copySummary() {
   const m = metrics(state.filtered);
-  const text = `WorkSight Dashboard summary\nRows: ${state.filtered.length}\nRevenue: ${money.format(m.revenue)}\nProfit: ${money.format(m.profit)}\nOpen/overdue: ${m.open}`;
+  const notes = insightNotes(state.filtered, m).map((note) => `- ${note}`).join('\n');
+  const text = [
+    'WorkSight Dashboard summary',
+    `Source: ${state.sourceLabel}`,
+    `Rows: ${state.filtered.length} of ${state.rows.length}`,
+    `Date range: ${el.start.value || 'n/a'} to ${el.end.value || 'n/a'}`,
+    `Revenue: ${money.format(m.revenue)}`,
+    `Profit: ${money.format(m.profit)}`,
+    `Open/overdue: ${m.open}`,
+    '',
+    'Insight notes:',
+    notes || '- No notes available'
+  ].join('\n');
+
   navigator.clipboard.writeText(text).then(() => {
     el.copy.textContent = 'Copied';
     setTimeout(() => { el.copy.textContent = 'Copy summary'; }, 1200);
@@ -288,11 +330,17 @@ el.loadSample.addEventListener('click', loadSample);
 el.upload.addEventListener('change', async (event) => {
   const file = event.target.files[0];
   if (!file) return;
-  loadRows(parseCsv(await file.text()));
+  loadRows(parseCsv(await file.text()), file.name);
 });
 el.print.addEventListener('click', () => window.print());
 el.copy.addEventListener('click', copySummary);
-el.reset.addEventListener('click', () => loadRows(state.rows));
+el.reset.addEventListener('click', () => {
+  resetFilterValues();
+  applyFilters();
+});
 [el.start, el.end, el.department, el.status].forEach((control) => control.addEventListener('change', applyFilters));
 
-loadSample().catch(() => renderList(el.insights, ['Sample data could not be loaded. Upload a CSV file instead.']));
+loadSample().catch(() => {
+  el.source.textContent = 'Sample data could not be loaded. Upload a CSV file instead.';
+  renderList(el.insights, ['Sample data could not be loaded. Upload a CSV file instead.']);
+});
