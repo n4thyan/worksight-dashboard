@@ -3,16 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="WorkSight Dashboard: CSV business analytics dashboard for office and work use cases." />
+  <meta name="description" content="WorkSight Dashboard: a practical CSV business analytics dashboard for office and workplace reporting." />
   <title>WorkSight Dashboard</title>
   <link rel="stylesheet" href="assets/css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#dashboard">Skip to dashboard</a>
+
   <header class="top-bar">
     <a class="brand" href="./">WorkSight</a>
     <nav aria-label="Project links">
       <a href="#dashboard">Dashboard</a>
+      <a href="#project-note">Project note</a>
       <a href="#data-table">Data</a>
       <a href="https://github.com/n4thyan/worksight-dashboard" target="_blank" rel="noopener">GitHub</a>
     </nav>
@@ -26,11 +29,16 @@
         Upload a CSV or use the sample data to review revenue, workload, status, data quality and plain-English notes.
       </p>
     </div>
-    <div class="header-actions" aria-label="Dashboard actions">
-      <button id="loadSampleBtn" class="button primary">Load sample data</button>
-      <label class="button secondary" for="csvUpload">Upload CSV</label>
-      <input id="csvUpload" type="file" accept=".csv,text/csv" />
-      <button id="printBtn" class="button secondary">Print report</button>
+
+    <div class="action-card">
+      <p class="action-label">Start with sample data or upload your own CSV.</p>
+      <div class="header-actions" aria-label="Dashboard actions">
+        <button id="loadSampleBtn" class="button primary">Load sample data</button>
+        <label class="button secondary" for="csvUpload">Upload CSV</label>
+        <input id="csvUpload" type="file" accept=".csv,text/csv" />
+        <button id="printBtn" class="button secondary">Print report</button>
+      </div>
+      <p id="dataSourceStatus" class="source-status" aria-live="polite">Loading sample data...</p>
     </div>
   </header>
 
@@ -93,7 +101,7 @@
           </div>
           <span id="recordCount" class="pill">0 rows</span>
         </div>
-        <canvas id="revenueChart" height="120"></canvas>
+        <canvas id="revenueChart" height="112"></canvas>
       </article>
 
       <article class="panel">
@@ -103,7 +111,7 @@
             <h2>Department revenue</h2>
           </div>
         </div>
-        <canvas id="departmentChart" height="180"></canvas>
+        <canvas id="departmentChart" height="170"></canvas>
       </article>
 
       <article class="panel">
@@ -113,7 +121,7 @@
             <h2>Status split</h2>
           </div>
         </div>
-        <canvas id="statusChart" height="180"></canvas>
+        <canvas id="statusChart" height="170"></canvas>
       </article>
 
       <article class="panel insight-panel">
@@ -135,6 +143,21 @@
         </div>
         <ul id="qualityList" class="quality-list"></ul>
       </article>
+    </section>
+
+    <section id="project-note" class="project-note panel">
+      <div>
+        <p class="eyebrow">Project note</p>
+        <h2>Built for realistic office data workflows</h2>
+      </div>
+      <p>
+        WorkSight is a portfolio MVP for turning spreadsheet-style data into readable dashboard outputs. CSV files are parsed in the browser, and the summaries are rule-based rather than automated decision-making.
+      </p>
+      <ul>
+        <li>Useful for sales, support, invoices and admin reporting examples.</li>
+        <li>Best used with exported spreadsheet data that matches the sample CSV headings.</li>
+        <li>Human review is still required before acting on any insight note.</li>
+      </ul>
     </section>
 
     <section id="data-table" class="table-panel panel">
@@ -167,6 +190,10 @@
 
   <footer class="app-footer">
     <p>Built as a practical portfolio project by Nathan May. Rule-based insights, not automated decision-making.</p>
+    <div>
+      <a href="https://nathm.net" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://github.com/n4thyan/worksight-dashboard" target="_blank" rel="noopener">GitHub repo</a>
+    </div>
   </footer>
 
   <script src="assets/js/app.js"></script>
