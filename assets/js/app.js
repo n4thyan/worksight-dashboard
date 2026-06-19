@@ -2,6 +2,7 @@ const state = { rows: [], filtered: [], charts: {} };
 
 const money = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
 const number = new Intl.NumberFormat('en-GB');
+const chartPalette = ['#2563eb', '#0f766e', '#7c3aed', '#ea580c', '#475569', '#16a34a'];
 
 const el = {
   loadSample: document.getElementById('loadSampleBtn'),
@@ -177,7 +178,20 @@ function drawLine(id, entries) {
   destroy(id);
   state.charts[id] = new Chart(document.getElementById(id), {
     type: 'line',
-    data: { labels: entries.map((x) => x[0]), datasets: [{ label: 'Revenue', data: entries.map((x) => x[1]), tension: 0.32, borderWidth: 3, fill: true }] },
+    data: {
+      labels: entries.map((x) => x[0]),
+      datasets: [{
+        label: 'Revenue',
+        data: entries.map((x) => x[1]),
+        tension: 0.28,
+        borderWidth: 2,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37, 99, 235, 0.12)',
+        pointBackgroundColor: '#2563eb',
+        pointRadius: 3,
+        fill: true
+      }]
+    },
     options: chartOptions()
   });
 }
@@ -186,18 +200,26 @@ function drawDoughnut(id, entries) {
   destroy(id);
   state.charts[id] = new Chart(document.getElementById(id), {
     type: 'doughnut',
-    data: { labels: entries.map((x) => x[0]), datasets: [{ data: entries.map((x) => x[1]) }] },
-    options: { ...chartOptions(), plugins: { legend: { position: 'bottom', labels: { color: '#dbe7fb' } } } }
+    data: {
+      labels: entries.map((x) => x[0]),
+      datasets: [{
+        data: entries.map((x) => x[1]),
+        backgroundColor: entries.map((_, index) => chartPalette[index % chartPalette.length]),
+        borderColor: '#ffffff',
+        borderWidth: 3
+      }]
+    },
+    options: { ...chartOptions(), plugins: { legend: { position: 'bottom', labels: { color: '#334155' } } } }
   });
 }
 
 function chartOptions() {
   return {
     responsive: true,
-    plugins: { legend: { labels: { color: '#dbe7fb' } } },
+    plugins: { legend: { labels: { color: '#334155' } } },
     scales: {
-      x: { ticks: { color: '#9fb0c9' }, grid: { color: 'rgba(159,176,201,0.08)' } },
-      y: { ticks: { color: '#9fb0c9' }, grid: { color: 'rgba(159,176,201,0.08)' } }
+      x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(148, 163, 184, 0.18)' } },
+      y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(148, 163, 184, 0.18)' } }
     }
   };
 }
