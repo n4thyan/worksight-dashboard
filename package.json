@@ -1,0 +1,24 @@
+{
+  "name": "worksight-dashboard",
+  "version": "1.0.0",
+  "description": "CSV business analytics dashboard for office and work use cases.",
+  "private": false,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "keywords": [
+    "dashboard",
+    "analytics",
+    "csv",
+    "business-intelligence",
+    "portfolio",
+    "ai-assisted-workflows"
+  ],
+  "author": "Nathan May",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
