@@ -1,7 +1,7 @@
 {
   "name": "worksight-dashboard",
   "version": "1.0.0",
-  "description": "CSV business analytics dashboard for office and work use cases.",
+  "description": "Practical CSV business analytics dashboard for office reporting and portfolio use.",
   "private": false,
   "type": "commonjs",
   "scripts": {
@@ -13,11 +13,17 @@
     "analytics",
     "csv",
     "business-intelligence",
+    "office-workflows",
     "portfolio",
     "ai-assisted-workflows"
   ],
   "author": "Nathan May",
   "license": "MIT",
+  "homepage": "https://nathm.net/worksight/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n4thyan/worksight-dashboard.git"
+  },
   "engines": {
     "node": ">=18"
   }
