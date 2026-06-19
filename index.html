@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="WorkSight Dashboard: CSV business analytics dashboard for office and work use cases." />
+  <title>WorkSight Dashboard</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">AI-assisted office workflow demo</p>
+      <h1>WorkSight Dashboard</h1>
+      <p class="lede">Turn spreadsheet-style business data into KPIs, charts, insight notes and a printable report.</p>
+    </div>
+    <div class="header-actions">
+      <button id="loadSampleBtn" class="button primary">Load sample data</button>
+      <label class="button secondary" for="csvUpload">Upload CSV</label>
+      <input id="csvUpload" type="file" accept=".csv,text/csv" />
+      <button id="printBtn" class="button secondary">Print report</button>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="notice-card">
+      <strong>Human review required.</strong>
+      <span>This dashboard creates rule-based summaries from uploaded data. Check the source data before making business decisions.</span>
+    </section>
+
+    <section class="controls-panel">
+      <div class="control-group">
+        <label for="startDate">Start date</label>
+        <input id="startDate" type="date" />
+      </div>
+      <div class="control-group">
+        <label for="endDate">End date</label>
+        <input id="endDate" type="date" />
+      </div>
+      <div class="control-group">
+        <label for="departmentFilter">Department</label>
+        <select id="departmentFilter">
+          <option value="all">All departments</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="all">All statuses</option>
+        </select>
+      </div>
+      <button id="resetFiltersBtn" class="button ghost">Reset filters</button>
+    </section>
+
+    <section id="kpiGrid" class="kpi-grid" aria-live="polite"></section>
+
+    <section class="content-grid">
+      <article class="panel wide">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Trend</p>
+            <h2>Revenue over time</h2>
+          </div>
+          <span id="recordCount" class="pill">0 rows</span>
+        </div>
+        <canvas id="revenueChart" height="120"></canvas>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Breakdown</p>
+            <h2>Department revenue</h2>
+          </div>
+        </div>
+        <canvas id="departmentChart" height="180"></canvas>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Workflow</p>
+            <h2>Status split</h2>
+          </div>
+        </div>
+        <canvas id="statusChart" height="180"></canvas>
+      </article>
+
+      <article class="panel insight-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Plain-English summary</p>
+            <h2>Insight notes</h2>
+          </div>
+        </div>
+        <ul id="insightList" class="insight-list"></ul>
+      </article>
+
+      <article class="panel data-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Data quality</p>
+            <h2>Checks</h2>
+          </div>
+        </div>
+        <ul id="qualityList" class="quality-list"></ul>
+      </article>
+    </section>
+
+    <section class="table-panel panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Filtered data</p>
+          <h2>Rows used in this view</h2>
+        </div>
+        <button id="copySummaryBtn" class="button ghost">Copy summary</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Department</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Revenue</th>
+              <th>Cost</th>
+              <th>Tickets</th>
+              <th>Satisfaction</th>
+            </tr>
+          </thead>
+          <tbody id="dataTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Built as a practical portfolio project by Nathan May. Rule-based insights, not automated decision-making.</p>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
