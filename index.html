@@ -9,13 +9,24 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
+  <header class="top-bar">
+    <a class="brand" href="./">WorkSight</a>
+    <nav aria-label="Project links">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#data-table">Data</a>
+      <a href="https://github.com/n4thyan/worksight-dashboard" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
   <header class="app-header">
-    <div>
-      <p class="eyebrow">AI-assisted office workflow demo</p>
-      <h1>WorkSight Dashboard</h1>
-      <p class="lede">Turn spreadsheet-style business data into KPIs, charts, insight notes and a printable report.</p>
+    <div class="hero-copy">
+      <p class="eyebrow">Office analytics dashboard</p>
+      <h1>Turn spreadsheet data into a clear business view.</h1>
+      <p class="lede">
+        Upload a CSV or use the sample data to review revenue, workload, status, data quality and plain-English notes.
+      </p>
     </div>
-    <div class="header-actions">
+    <div class="header-actions" aria-label="Dashboard actions">
       <button id="loadSampleBtn" class="button primary">Load sample data</button>
       <label class="button secondary" for="csvUpload">Upload CSV</label>
       <input id="csvUpload" type="file" accept=".csv,text/csv" />
@@ -23,13 +34,31 @@
     </div>
   </header>
 
-  <main class="dashboard-shell">
+  <main id="dashboard" class="dashboard-shell">
     <section class="notice-card">
-      <strong>Human review required.</strong>
+      <strong>Review before use.</strong>
       <span>This dashboard creates rule-based summaries from uploaded data. Check the source data before making business decisions.</span>
     </section>
 
-    <section class="controls-panel">
+    <section class="use-case-grid" aria-label="Example workplace use cases">
+      <article>
+        <span>01</span>
+        <h2>Sales review</h2>
+        <p>Track revenue, profit and average order value from spreadsheet exports.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h2>Workflow checks</h2>
+        <p>Spot open, overdue or slow-response items before they are missed.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h2>Reporting</h2>
+        <p>Copy a short summary or print a clean report for review meetings.</p>
+      </article>
+    </section>
+
+    <section class="controls-panel" aria-label="Dashboard filters">
       <div class="control-group">
         <label for="startDate">Start date</label>
         <input id="startDate" type="date" />
@@ -90,7 +119,7 @@
       <article class="panel insight-panel">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">Plain-English summary</p>
+            <p class="eyebrow">Summary</p>
             <h2>Insight notes</h2>
           </div>
         </div>
@@ -108,7 +137,7 @@
       </article>
     </section>
 
-    <section class="table-panel panel">
+    <section id="data-table" class="table-panel panel">
       <div class="panel-heading">
         <div>
           <p class="eyebrow">Filtered data</p>
